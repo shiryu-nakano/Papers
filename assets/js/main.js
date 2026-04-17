@@ -213,10 +213,10 @@ function processInline(text) {
     processed = processed
         // インラインコード
         .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
-        // 画像
-        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="markdown-image">')
-        // リンク
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+        // 画像（改行を許容）
+        .replace(/!\[([^\]]*)\]\s*\(([^)]+)\)/g, '<img src="$2" alt="$1" class="markdown-image">')
+        // リンク（改行を許容）
+        .replace(/\[([^\]]+)\]\s*\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
         // 太字（**が先、*は後で処理）
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/__(.*?)__/g, '<strong>$1</strong>')
