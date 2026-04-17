@@ -194,7 +194,23 @@ function parseMarkdown(markdown) {
 
 // インライン要素を処理
 function processInline(text) {
-    return text
+    // 数式を先にプレースホルダーに置き換えて保護
+    const mathBlocks = [];
+    let processed = text
+        // ブロック数式 $$...$$ を保護
+        .replace(/\$\$([^$]+)\$\$/g, (_match, math) => {
+            const placeholder = `%%MATH_${mathBlocks.length}%%`;
+            mathBlocks.push(`$$${math}$$`);
+            return placeholder;
+        })
+        // インライン数式 $...$ を保護
+        .replace(/\$([^$]+)\$/g, (_match, math) => {
+            const placeholder = `%%MATH_${mathBlocks.length}%%`;
+            mathBlocks.push(`$${math}$`);
+            return placeholder;
+        });
+
+    processed = processed
         // インラインコード
         .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
         // 画像
@@ -207,6 +223,13 @@ function processInline(text) {
         // 斜体
         .replace(/\*([^\*]+)\*/g, '<em>$1</em>')
         .replace(/_([^_]+)_/g, '<em>$1</em>');
+
+    // 数式を復元
+    mathBlocks.forEach((math, i) => {
+        processed = processed.replace(`%%MATH_${i}%%`, math);
+    });
+
+    return processed;
 }
 
 // HTMLエスケープ関数
