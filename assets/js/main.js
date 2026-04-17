@@ -285,6 +285,19 @@ async function renderDetailView(issueNumber) {
         issuesContainer.appendChild(backLink);
         issuesContainer.appendChild(detailCard);
 
+        // KaTeX で数式をレンダリング
+        if (typeof renderMathInElement === 'function') {
+            renderMathInElement(detailCard, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\[', right: '\\]', display: true},
+                    {left: '\\(', right: '\\)', display: false}
+                ],
+                throwOnError: false
+            });
+        }
+
     } catch (error) {
         issuesContainer.innerHTML = `<div class="error-message"><p>${escapeHtml(error.message)}</p></div>`;
     }
